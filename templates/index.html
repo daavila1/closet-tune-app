@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>closet tune</title>
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1  style="text-align: center;">CLOSET TUNE</h1>
+    </header>
+
+    <form action="/predecir" id="form-prediccion" method="POST">
+      <main class="main-container">
+        <canvas id="main-canvas" width="400" height="400"></canvas>
+      </main>
+
+      <div class="button-container">
+        <button type="button" id='predict-button' class="button" onclick="enviarImagen()">Predict</button>
+      </div>
+    </form>
+
+    <main class="buttons">
+      <div class="button-container">
+        <button id="clean-button" class="button">Clean</button>
+      </div>
+    </main>
+
+    <main class="container">
+      <h2 id="prediccion" style="text-align: center;">Prediction: <span id="valor-prediccion"></span></h2>
+    </main>
+
+    <script>
+      function enviarImagen() {
+        var canvas = document.getElementById('main-canvas');
+        var imageDataURL = canvas.toDataURL('image/png');
+
+        axios.post('/predecir', {
+          imagen: imageDataURL
+        })
+        .then(function (response) {
+          console.log(response.data);
+          document.getElementById('valor-prediccion').textContent = response.data;
+          // Manejar la respuesta del servidor aquí
+        })
+        .catch(function (error) {
+          console.error(error);
+          // Manejar el error aquí
+        });
+    }
+    </script>
+
+    <script src="static/index.js"></script>
+  </body>
+
+</html>
