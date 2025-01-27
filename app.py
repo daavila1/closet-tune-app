@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 from io import BytesIO
 import base64
-# import sklearn
 import joblib
 
 
@@ -40,16 +39,16 @@ def predecir():
     pred = model.predict(img_norm)
 
     # Get class name
-    class_names = {0: 'camiseta/top',
-                   1: 'pantalón',
+    class_names = {0: 't-shirt/top',
+                   1: 'trouser',
                    2: 'pullover',
-                   3: 'vestido',
-                   4: 'abrigo',
-                   5: 'sandalia',
-                   6: 'camisa',
-                   7: 'zapato',
-                   8: 'bolso/maleta',
-                   9: 'botín', }
+                   3: 'dress',
+                   4: 'coat',
+                   5: 'sandal',
+                   6: 'shirt',
+                   7: 'sneaker',
+                   8: 'bag',
+                   9: 'ankle boot', }
     
     prediction = class_names[pred[0]]
 
