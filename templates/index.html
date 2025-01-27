@@ -23,18 +23,27 @@
       <h1 style="text-align: center;">CLOSET TUNE</h1>
     </header>
 
+    <!-- Buttons to select preferred model -->
+    <div class="button-container-1">
+      <button type="button" id="knn-button" class="button">KNN</button>
+      <button type="button" id="nn-button" class="button">NN</button>
+      <button type="button" id="rand-forest-button" class="button">RANDOM FOREST</button>
+      <button type="button" id="tree-button" class="button">TREE CLASSIFIER</button>
+    </div>
+
     <!-- Form for submitting the canvas image -->
     <form action="/predict" id="form-prediction" method="POST">
       <!-- Main canvas for drawing -->
       <main class="main-container">
         <canvas id="main-canvas" width="400" height="400"></canvas>
       </main>
-
-      <!-- Button to trigger prediction -->
-      <div class="button-container">
-        <button type="button" id="predict-button" class="button" onclick="sendImage()">Predict</button>
-      </div>
     </form>
+
+    <!-- Button to trigger prediction -->
+    <div class="button-container">
+      <button type="button" id="predict-button" class="button" onclick="sendImage()">Predict</button>
+    </div>
+
 
     <!-- Clear button to reset the canvas -->
     <main class="buttons">

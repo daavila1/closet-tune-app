@@ -17,7 +17,6 @@
     align-items: center;
   }
 
-
   canvas {
     background-color: #fff;
   }
@@ -26,16 +25,26 @@
     text-align: center;
   }
 
+  .button-container-1 {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
   .button {
     margin: 10px;
     padding: 10px 20px;
-    background-color: #007bff; /* Puedes cambiar el color de fondo */
-    color: #fff; /* Puedes cambiar el color del texto */
+    background-color: #007bff;
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
 
-  button:hover {
-    background-color: #0056b3; /* Color de fondo en el hover */
+  .button:hover {
+    background-color: #0056b3;
+  }
+
+  .button.active {
+    background-color: #1b9333; /* Active state (same as hover color) */
   }

@@ -4,6 +4,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const mainCanvas = document.getElementById('main-canvas');
   const context = mainCanvas.getContext('2d');
 
+  // Get all buttons with the class "button"
+  const buttons = document.querySelectorAll('.button-container-1 .button');
+
+  // Add click event listener to each button
+  buttons.forEach((button) => {
+    button.addEventListener('click', function () {
+      // Remove "active" class from all buttons
+      buttons.forEach((btn) => btn.classList.remove('active'));
+      // Add "active" class to the clicked button
+      button.classList.add('active');
+    });
+  });
+
   // Variables to store the initial coordinates of the drawing
   let initialX;
   let initialY;
