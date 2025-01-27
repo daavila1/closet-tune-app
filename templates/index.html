@@ -2,60 +2,78 @@
 
 <html lang="en">
   <head>
+    <!-- Meta tags for character encoding, compatibility, and responsive design -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>closet tune</title>
-    <link rel="stylesheet" href="static/style.css">
+
+    <!-- Page title -->
+    <title>Closet Tune</title>
+
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="static/style.css" />
+
+    <!-- Axios library for making HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
 
   <body>
+    <!-- Header section with the title -->
     <header>
-      <h1  style="text-align: center;">CLOSET TUNE</h1>
+      <h1 style="text-align: center;">CLOSET TUNE</h1>
     </header>
 
-    <form action="/predecir" id="form-prediccion" method="POST">
+    <!-- Form for submitting the canvas image -->
+    <form action="/predict" id="form-prediction" method="POST">
+      <!-- Main canvas for drawing -->
       <main class="main-container">
         <canvas id="main-canvas" width="400" height="400"></canvas>
       </main>
 
+      <!-- Button to trigger prediction -->
       <div class="button-container">
-        <button type="button" id='predict-button' class="button" onclick="enviarImagen()">Predict</button>
+        <button type="button" id="predict-button" class="button" onclick="sendImage()">Predict</button>
       </div>
     </form>
 
+    <!-- Clear button to reset the canvas -->
     <main class="buttons">
       <div class="button-container">
-        <button id="clean-button" class="button">Clean</button>
+        <button id="clear-button" class="button">Clear</button>
       </div>
     </main>
 
+    <!-- Section to display the prediction result -->
     <main class="container">
-      <h2 id="prediccion" style="text-align: center;">Prediction: <span id="valor-prediccion"></span></h2>
+      <h2 id="prediction" style="text-align: center;">
+        Prediction: <span id="prediction-value"></span>
+      </h2>
     </main>
 
+    <!-- JavaScript to handle sending the canvas image to the server -->
     <script>
-      function enviarImagen() {
+      function sendImage() {
+        // Get the canvas element and convert it to a data URL (base64 image)
         var canvas = document.getElementById('main-canvas');
         var imageDataURL = canvas.toDataURL('image/png');
 
-        axios.post('/predecir', {
-          imagen: imageDataURL
+        // Send the image data to the Flask backend using Axios
+        axios.post('/predict', {
+          image: imageDataURL  // Include the image data in the request body
         })
         .then(function (response) {
+          // Handle the server's response (prediction result)
           console.log(response.data);
-          document.getElementById('valor-prediccion').textContent = response.data;
-          // Manejar la respuesta del servidor aquí
+          document.getElementById('prediction-value').textContent = response.data;
         })
         .catch(function (error) {
+          // Handle any errors that occur during the request
           console.error(error);
-          // Manejar el error aquí
         });
-    }
+      }
     </script>
 
+    <!-- Link to external JavaScript file (for additional functionality, e.g., clearing the canvas) -->
     <script src="static/index.js"></script>
   </body>
-
 </html>
