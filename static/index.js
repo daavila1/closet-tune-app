@@ -125,4 +125,47 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(response.data.message);
       })
   });
+
+  // Get the file input and upload button elements
+  const uploadInput = document.getElementById('upload-input');
+  const uploadButton = document.getElementById('upload-button');
+
+  // Trigger the file input when the upload button is clicked
+  uploadButton.addEventListener('click', function () {
+    uploadInput.click(); // Open the file dialog
+  });
+
+  // Handle file selection
+  uploadInput.addEventListener('change', function (event) {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      const reader = new FileReader(); // Create a FileReader to read the file
+
+      // When the file is loaded, draw it on the canvas
+      reader.onload = function (e) {
+        const img = new Image(); // Create an image element
+        img.src = e.target.result; // Set the image source to the file data
+
+        // When the image is loaded, draw it on the canvas
+        img.onload = function () {
+          // Clear the canvas
+          context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+
+          // Draw the image on the canvas, scaled to fit
+          const scale = Math.min(
+            mainCanvas.width / img.width,
+            mainCanvas.height / img.height
+          );
+          const width = img.width * scale;
+          const height = img.height * scale;
+          const x = (mainCanvas.width - width) / 2;
+          const y = (mainCanvas.height - height) / 2;
+
+          context.drawImage(img, x, y, width, height);
+        };
+      };
+
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  });
 });
