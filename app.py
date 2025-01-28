@@ -3,12 +3,22 @@ from io import BytesIO
 
 import joblib
 import numpy as np
-from flask import Flask, render_template, request
+import pandas as pd
+from flask import Flask, jsonify, render_template, request
 from PIL import Image
+
+# Load pre-trained models
+KNN = joblib.load("models/knn.pkl")
+NN = joblib.load("models/nn.pkl")
+RANDOM_FOREST = joblib.load("models/random_forest.pkl")
+TREE = joblib.load("models/tree.pkl")
+
+# Global variable to handle model selection
+MODEL = KNN
 
 # Initialize Flask application
 app = Flask(__name__)
-# app.config["TEMPLATES_AUTO_RELOAD"] = True  # Auto-reload templates for development
+app.config["TEMPLATES_AUTO_RELOAD"] = True  # Auto-reload templates for development
 
 
 # Route to render the main index page
@@ -19,7 +29,6 @@ def index():
     This is the entry point of the web application.
     """
     return render_template("index.html")
-
 
 # Route to handle image prediction requests
 @app.route("/predict", methods=["POST"])
@@ -35,21 +44,29 @@ def predecir():
     original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
     resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
     np_img = np.array(resized_img)  # Convert image to a NumPy array
-    img = np_img[:, :, -1].reshape(
-        (1, -1)
-    )  # Extract the last channel and flatten
-    img_norm = img / 255.0  # Normalize pixel values to [0, 1]
+    img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
 
-    # Debugging: Print normalized image data and its shape
-    print("Normalized Image Data:")
-    print(img_norm)
-    print("Image Shape:", img_norm.shape)
+    # Selective image processing: RF and TC models were trained with neither normalized 
+    # data nor PCA reduction since best scores were obtained with those data-sets.
+    if MODEL in (RANDOM_FOREST, TREE):
+        img_final = img.reshape(1, -1)  # Flatten the image
+        # Both models were trained using this column name pattern:
+        feature_names = [f"pixel{i + 1}" for i in range(784)]  # For 28x28 image
+        img_final = pd.DataFrame(img_final, columns=feature_names)
 
-    # Load the pre-trained model
-    model = joblib.load("models/nn.pkl")  # Load the model from the specified path
+    else:
+        img_final = img / 255.0
+
+    # # Debugging: Print normalized image data and its shape
+    # print("Normalized Image Data:")
+    # print(img_final)
+    # print("Image Shape:", img_final.shape)
+
+    # # Debugging: Print selected model
+    # print(MODEL)
 
     # Get prediction from the model
-    pred = model.predict(img_norm)  # Predict the class of the image
+    pred = MODEL.predict(img_final)  # Predict the class of the image
 
     # Map predicted class index to class name
     class_names = {
@@ -73,6 +90,32 @@ def predecir():
     # Return the predicted class as the response
     return prediction
 
+@app.route("/select-knn", methods=["POST"])
+def select_knn():
+    global MODEL, KNN
+    MODEL = KNN
+    return jsonify({"message": "knn model selected"})
+
+
+@app.route("/select-nn", methods=["POST"])
+def select_nn():
+    global MODEL, NN
+    MODEL = NN
+    return jsonify({"message": "nn model selected"})
+
+
+@app.route("/select-random-forest", methods=["POST"])
+def select_random_forest():
+    global MODEL, RANDOM_FOREST
+    MODEL = RANDOM_FOREST
+    return jsonify({"message": "random forest model selected"})
+
+
+@app.route("/select-tree", methods=["POST"])
+def select_tree():
+    global MODEL, TREE
+    MODEL = TREE
+    return jsonify({"message": "tree model selected"})
 
 # # Run the Flask application
 # if __name__ == "__main__":

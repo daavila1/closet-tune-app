@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const mainCanvas = document.getElementById('main-canvas');
   const context = mainCanvas.getContext('2d');
 
-  // Get all buttons with the class "button"
+  // Set green color in selected model button
+  // Get all buttons within the button container 
   const buttons = document.querySelectorAll('.button-container-1 .button');
 
   // Add click event listener to each button
@@ -85,5 +86,43 @@ document.addEventListener('DOMContentLoaded', function () {
     const imageBase64 = mainCanvas.toDataURL('image/png');
     // Log the base64 image data to the console (for debugging)
     console.log('Base64 Image Data:', imageBase64);
+  });
+
+  // Add event listeners for the select model button
+  // Get the buttons
+  const knnButton = document.getElementById('knn-button');
+  const nnButton = document.getElementById('nn-button');
+  const randForestButton = document.getElementById('rand-forest-button');
+  const treeButton = document.getElementById('tree-button');
+
+  // Set the KNN button as active by default
+  knnButton.classList.add('active');
+
+  knnButton.addEventListener('click', function () {
+    axios.post('select-knn')
+      .then(function (response) {
+        console.log(response.data.message);
+      })
+  });
+
+  nnButton.addEventListener('click', function () {
+    axios.post('/select-nn')
+      .then(function (response) {
+        console.log(response.data.message);
+      })
+  });
+
+  randForestButton.addEventListener('click', function () {
+    axios.post('/select-random-forest')
+      .then(function (response) {
+        console.log(response.data.message);
+      })
+  });
+
+  treeButton.addEventListener('click', function () {
+    axios.post('/select-tree')
+      .then(function (response) {
+        console.log(response.data.message);
+      })
   });
 });
