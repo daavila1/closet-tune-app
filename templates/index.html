@@ -33,9 +33,15 @@
 
     <!-- Form for submitting the canvas image -->
     <form action="/predict" id="form-prediction" method="POST">
-      <!-- Main canvas for drawing -->
       <main class="main-container">
+        <!-- Main canvas for drawing -->
         <canvas id="main-canvas" width="400" height="400"></canvas>
+        <!-- Contenedor para "Draw or" y el botón de subida -->
+        <div class="upload-container">
+          <span>Draw or</span>
+          <input type="file" id="upload-input" accept="image/*" style="display: none;" />
+          <button type="button" id="upload-button" class="button">Upload Image</button>
+        </div>
       </main>
     </form>
 
@@ -65,7 +71,6 @@
         // Get the canvas element and convert it to a data URL (base64 image)
         var canvas = document.getElementById('main-canvas');
         var imageDataURL = canvas.toDataURL('image/png');
-
         // Send the image data to the Flask backend using Axios
         axios.post('/predict', {
           image: imageDataURL  // Include the image data in the request body

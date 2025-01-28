@@ -1,50 +1,55 @@
-  body {
-    margin: 0;
-    padding: 0;
-  }
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ccc;
+  padding: 30px;
+}
 
-  .main-container {
-    background-color: rgb(200, 200, 200);
-    height: 65vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+canvas {
+  background-color: #fff;
+}
 
-  canvas {
-    background-color: #fff;
-  }
+.button-container {
+  text-align: center;
+}
 
-  .button-container {
-    text-align: center;
-  }
+.button-container-1 {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
-  .button-container-1 {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
+.button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .button {
-    margin: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+.button:hover {
+  background-color: #0056b3;
+}
 
-  .button:hover {
-    background-color: #0056b3;
-  }
+.button.active {
+  background-color: #1b9333; /* Active state */
+}
 
-  .button.active {
-    background-color: #1b9333; /* Active state (same as hover color) */
-  }
+.upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
