@@ -1,3 +1,4 @@
+/* Main container for the canvas and upload section */
 .main-container {
   display: flex;
   flex-direction: column;
@@ -7,26 +8,31 @@
   padding: 30px;
 }
 
+/* Container for centering elements (e.g., prediction text) */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Styling for the canvas element */
 canvas {
   background-color: #fff;
 }
 
+/* Container for buttons */
 .button-container {
   text-align: center;
 }
 
+/* Container for model selection buttons */
 .button-container-1 {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
+/* Base styling for buttons */
 .button {
   margin: 10px;
   padding: 10px 20px;
@@ -37,14 +43,17 @@ canvas {
   cursor: pointer;
 }
 
+/* Hover effect for buttons */
 .button:hover {
   background-color: #0056b3;
 }
 
+/* Active state for buttons (e.g., selected model) */
 .button.active {
   background-color: #1b9333; /* Active state */
 }
 
+/* Container for the upload section (text and upload button) */
 .upload-container {
   display: flex;
   align-items: center;
