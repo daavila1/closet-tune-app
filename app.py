@@ -53,17 +53,19 @@ def predecir():
     decoded_img = base64.b64decode(base64_img)  # Decode base64 to binary image data
 
     # Debugging:
-    print(img_source)
+    # print(img_source)
+    
+    # If image source is canvas (drawing)
     if img_source == "canvas":
         original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
         resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
         np_img = np.array(resized_img)  # Convert image to a NumPy array
         img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
 
+    # Else image was uploaded by user
     else:
         # Open the image and convert to grayscale
         original_img = Image.open(BytesIO(decoded_img)).convert("L")
-        print(f"img format: {original_img.format}")
         resized_img = original_img.resize((28, 28))  # Resize to 28x28 pixels
         np_img = np.array(resized_img)  # Convert to NumPy array (2D: height × width)
 
@@ -86,8 +88,7 @@ def predecir():
         img_final = img / 255.0
 
     # # Debugging: Print normalized image data and its shape
-    # print("Normalized Image Data:")
-    print(img)
+    # print(img)
     # print("Image Shape:", img_final.shape)
 
     # Debugging: Print the selected model
@@ -119,7 +120,7 @@ def predecir():
         prediction = class_names[pred[0]]  # Get the class name from the predicted index
 
         # Debugging: Print the predicted class
-        print("Predicted Class:", prediction)
+        # print("Predicted Class:", prediction)
 
     # Return the predicted class as the response
     return prediction
