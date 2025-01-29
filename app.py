@@ -40,11 +40,28 @@ def predecir():
     # Image preprocessing
     data = request.json  # Get JSON data from the request
     base64_img = data["image"].split(",")[1]  # Extract base64 image data
+    img_source = data.get('source', 'unknown') # Extract source data
     decoded_img = base64.b64decode(base64_img)  # Decode base64 to binary image data
-    original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
-    resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
-    np_img = np.array(resized_img)  # Convert image to a NumPy array
-    img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
+    
+    if img_source == 'canvas':
+        original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
+        resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
+        np_img = np.array(resized_img)  # Convert image to a NumPy array
+        img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
+        
+    else:
+        # Open the image and convert to grayscale
+        original_img = Image.open(BytesIO(decoded_img)).convert("L")
+        print(f'img format: {original_img.format}')
+        resized_img = original_img.resize((28, 28))  # Resize to 28x28 pixels
+        np_img = np.array(resized_img)  # Convert to NumPy array (2D: height × width)
+
+        # Invert pixel values (0 -> 255, 255 -> 0)
+        np_img = 255 - np_img  # Invert to match dataset format
+        
+        # Flatten the 2D array into a 1D array
+        img = np_img.reshape((1, -1))  # Reshape to (1, 784)
+        
 
     # Selective image processing: RF and TC models were trained with neither normalized 
     # data nor PCA reduction since best scores were obtained with those data-sets.
@@ -56,7 +73,6 @@ def predecir():
 
     else:
         img_final = img / 255.0
-
     # # Debugging: Print normalized image data and its shape
     # print("Normalized Image Data:")
     # print(img_final)
