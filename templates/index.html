@@ -71,9 +71,12 @@
         // Get the canvas element and convert it to a data URL (base64 image)
         var canvas = document.getElementById('main-canvas');
         var imageDataURL = canvas.toDataURL('image/png');
+        // Verificar si la imagen fue dibujada o cargada
+        var source = wasImageUploaded ? "upload" : "canvas";
         // Send the image data to the Flask backend using Axios
         axios.post('/predict', {
-          image: imageDataURL  // Include the image data in the request body
+          image: imageDataURL,  // Include the image data in the request body
+          source: source // Indicador de origen
         })
         .then(function (response) {
           // Handle the server's response (prediction result)
