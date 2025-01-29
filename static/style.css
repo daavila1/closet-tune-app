@@ -20,7 +20,7 @@ canvas {
   background-color: #fff; /* White background for the canvas */
 }
 
-/* Container for buttons (e.g., Predict and Clear buttons) */
+/* Container for buttons */
 .button-container {
   text-align: center; /* Center-align button text */
 }

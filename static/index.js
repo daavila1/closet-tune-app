@@ -184,20 +184,22 @@ document.addEventListener('DOMContentLoaded', function () {
       reader.readAsDataURL(file); // Read the file as a data URL
     }
   });
+});
 
-  // Variable to track if an image was uploaded
-  let wasImageUploaded = false;
 
-  // Modify the image upload event to update the flag
-  uploadInput.addEventListener('change', function (event) {
+// Variable to track if an image was uploaded
+let wasImageUploaded = false;
+
+ // Modify the image upload event to update the flag
+document.getElementById('upload-input').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
-      wasImageUploaded = true; // Indicate that the image was uploaded
+        wasImageUploaded = true; // Indicate that the image was uploaded
     }
-  });
-
-  // Modify the canvas drawing event to update the flag
-  mainCanvas.addEventListener('mousedown', function () {
-    wasImageUploaded = false; // If the user starts drawing, the image is from the canvas
-  });
 });
+
+// Modify the canvas drawing event to update the flag
+document.getElementById('main-canvas').addEventListener('mousedown', function () {
+    wasImageUploaded = false; // If the user starts drawing, the image is from the canvas
+});
+

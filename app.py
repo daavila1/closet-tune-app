@@ -48,43 +48,33 @@ def predecir():
     """
     # Image preprocessing
     data = request.json  # Get JSON data from the request
-    base64_img = data["image"].split(",")[
-        1
-    ]  # Extract base64 image data (remove metadata)
-    img_source = data.get(
-        "source", "unknown"
-    )  # Extract source of the image (e.g., 'canvas' or 'upload')
+    base64_img = data["image"].split(",")[1]  # Extract base64 image data
+    img_source = data.get("source", "unknown")  # Extract source data
     decoded_img = base64.b64decode(base64_img)  # Decode base64 to binary image data
 
-    # Image processing based on the source
+    # Debugging:
+    print(img_source)
     if img_source == "canvas":
-        # Open image using PIL and resize to 28x28 pixels
-        original_img = Image.open(BytesIO(decoded_img))
-        resized_img = original_img.resize((28, 28))
+        original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
+        resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
         np_img = np.array(resized_img)  # Convert image to a NumPy array
-        img = np_img[:, :, -1].reshape(
-            (1, -1)
-        )  # Extract the last channel (alpha) and flatten
+        img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
+
     else:
-        # For uploaded images, convert to grayscale and preprocess
-        original_img = Image.open(BytesIO(decoded_img)).convert(
-            "L"
-        )  # Convert to grayscale
-        print(f"Image format: {original_img.format}")  # Debugging: Print image format
+        # Open the image and convert to grayscale
+        original_img = Image.open(BytesIO(decoded_img)).convert("L")
+        print(f"img format: {original_img.format}")
         resized_img = original_img.resize((28, 28))  # Resize to 28x28 pixels
         np_img = np.array(resized_img)  # Convert to NumPy array (2D: height × width)
 
-        # Invert pixel values (0 -> 255, 255 -> 0) to match dataset format
-        np_img = 255 - np_img
+        # Invert pixel values (0 -> 255, 255 -> 0)
+        np_img = 255 - np_img  # Invert to match dataset format
 
-        # Flatten the 2D array into a 1D array (1, 784)
-        img = np_img.reshape((1, -1))
+        # Flatten the 2D array into a 1D array
+        img = np_img.reshape((1, -1))  # Reshape to (1, 784)
 
-    # Debugging: Print the processed image data
-    # print("Processed Image Data:")
-    # print(img)
-
-    # Selective image processing based on the selected model
+    # Selective image processing: RF and TC models were trained with neither normalized
+    # data nor PCA reduction since best scores were obtained with those data-sets.
     if MODEL in (RANDOM_FOREST, TREE):
         # Random Forest and Decision Tree models were trained without normalization or PCA
         img_final = img.reshape(1, -1)  # Flatten the image
@@ -95,19 +85,19 @@ def predecir():
         # Normalize image data for KNN and Neural Network models
         img_final = img / 255.0
 
-    # Debugging: Print normalized image data and its shape
+    # # Debugging: Print normalized image data and its shape
     # print("Normalized Image Data:")
-    # print(img_final)
+    print(img)
     # print("Image Shape:", img_final.shape)
 
     # Debugging: Print the selected model
     # print("Selected Model:", MODEL)
 
-    # If canvas is empty trigger message
-    if np.all(img == 255):
-        prediction = "Canvas is empty, draw or upload an image!"
+    # If canvas is empty, trigger message
+    if np.all(img == 0) or np.all(img == 255):
+        prediction = "Canvas is empty, draw or upload and image."
 
-    # Else trigger model prediction
+    # Else send image to the model
     else:
         # Get prediction from the model
         pred = MODEL.predict(img_final)  # Predict the class of the image
