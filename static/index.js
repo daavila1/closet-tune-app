@@ -149,7 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // When the image is loaded, draw it on the canvas
         img.onload = function () {
           // Clear the canvas
-          context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+          context.fillStyle = "#FFFFFF";  // Fondo blanco
+          context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
           // Draw the image on the canvas, scaled to fit
           const scale = Math.min(
