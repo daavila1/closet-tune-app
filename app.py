@@ -81,8 +81,8 @@ def predecir():
         img = np_img.reshape((1, -1))
 
     # Debugging: Print the processed image data
-    print("Processed Image Data:")
-    print(img)
+    # print("Processed Image Data:")
+    # print(img)
 
     # Selective image processing based on the selected model
     if MODEL in (RANDOM_FOREST, TREE):
@@ -103,27 +103,33 @@ def predecir():
     # Debugging: Print the selected model
     # print("Selected Model:", MODEL)
 
-    # Get prediction from the model
-    pred = MODEL.predict(img_final)  # Predict the class of the image
+    # If canvas is empty trigger message
+    if np.all(img == 255):
+        prediction = "Canvas is empty, draw or upload an image!"
 
-    # Map predicted class index to class name
-    class_names = {
-        0: "t-shirt/top",
-        1: "trouser",
-        2: "pullover",
-        3: "dress",
-        4: "coat",
-        5: "sandal",
-        6: "shirt",
-        7: "sneaker",
-        8: "bag",
-        9: "ankle boot",
-    }
+    # Else trigger model prediction
+    else:
+        # Get prediction from the model
+        pred = MODEL.predict(img_final)  # Predict the class of the image
 
-    prediction = class_names[pred[0]]  # Get the class name from the predicted index
+        # Map predicted class index to class name
+        class_names = {
+            0: "t-shirt/top",
+            1: "trouser",
+            2: "pullover",
+            3: "dress",
+            4: "coat",
+            5: "sandal",
+            6: "shirt",
+            7: "sneaker",
+            8: "bag",
+            9: "ankle boot",
+        }
 
-    # Debugging: Print the predicted class
-    print("Predicted Class:", prediction)
+        prediction = class_names[pred[0]]  # Get the class name from the predicted index
+
+        # Debugging: Print the predicted class
+        print("Predicted Class:", prediction)
 
     # Return the predicted class as the response
     return prediction
