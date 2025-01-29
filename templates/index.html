@@ -9,7 +9,7 @@
     <!-- Page title -->
     <title>Closet Tune</title>
 
-    <!-- Link to external CSS file for styling -->
+    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="static/style.css" />
 
     <!-- Axios library for making HTTP requests -->
@@ -22,7 +22,7 @@
       <h1 style="text-align: center;">CLOSET TUNE</h1>
     </header>
 
-    <!-- Buttons to select the preferred machine learning model -->
+    <!-- Buttons to select preferred model -->
     <div class="button-container-1">
       <button type="button" id="knn-button" class="button">KNN</button>
       <button type="button" id="nn-button" class="button">NN</button>
@@ -35,13 +35,10 @@
       <main class="main-container">
         <!-- Main canvas for drawing -->
         <canvas id="main-canvas" width="400" height="400"></canvas>
-
-        <!-- Container for "Draw or" text and the upload button -->
+        <!-- Contenedor para "Draw or" y el botón de subida -->
         <div class="upload-container">
           <span>Draw or</span>
-          <!-- Hidden file input for image upload -->
           <input type="file" id="upload-input" accept="image/*" style="display: none;" />
-          <!-- Button to trigger the file upload dialog -->
           <button type="button" id="upload-button" class="button">Upload Image</button>
         </div>
       </main>
@@ -68,22 +65,16 @@
 
     <!-- JavaScript to handle sending the canvas image to the server -->
     <script>
-      // Variable to track if an image was uploaded
-      let wasImageUploaded = false;
-
-      // Function to send the canvas image to the server for prediction
       function sendImage() {
         // Get the canvas element and convert it to a data URL (base64 image)
         var canvas = document.getElementById('main-canvas');
         var imageDataURL = canvas.toDataURL('image/png');
-
-        // Determine the source of the image (canvas or upload)
+        // Verify if the image was drawn or uploaded
         var source = wasImageUploaded ? "upload" : "canvas";
-
         // Send the image data to the Flask backend using Axios
         axios.post('/predict', {
           image: imageDataURL,  // Include the image data in the request body
-          source: source        // Include the source of the image
+          source: source // Indicador de origen
         })
         .then(function (response) {
           // Handle the server's response (prediction result)
@@ -95,31 +86,6 @@
           console.error(error);
         });
       }
-
-      // Event listener for the file upload input
-      document.getElementById('upload-input').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = new Image();
-            img.onload = function () {
-              const canvas = document.getElementById('main-canvas');
-              const ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear the canvas
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);  // Draw the uploaded image
-              wasImageUploaded = true;  // Set the flag to indicate an image was uploaded
-            };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Event listener for the upload button (to trigger the file input)
-      document.getElementById('upload-button').addEventListener('click', function () {
-        document.getElementById('upload-input').click();
-      });
     </script>
 
     <!-- Link to external JavaScript file (for additional functionality, e.g., clearing the canvas) -->
