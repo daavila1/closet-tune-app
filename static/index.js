@@ -171,17 +171,18 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Variable to track if an image was uploaded
+let wasImageUploaded = false;
 
-let wasImageUploaded = false; // Por defecto, asumimos que el usuario dibujará en el canvas
-// Modificar el evento de carga de imagen
+ // Modify the image upload event to update the flag
 document.getElementById('upload-input').addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
-        wasImageUploaded = true; // Indicar que la imagen proviene de una subida
+        wasImageUploaded = true; // Indicate that the image was uploaded
     }
 });
 
-// Modificar los eventos de dibujo en el canvas
+// Modify the canvas drawing event to update the flag
 document.getElementById('main-canvas').addEventListener('mousedown', function () {
-    wasImageUploaded = false; // Si el usuario empieza a dibujar, la imagen es del canvas
+    wasImageUploaded = false; // If the user starts drawing, the image is from the canvas
 });

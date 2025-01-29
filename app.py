@@ -93,7 +93,7 @@ def predecir():
     # print(MODEL)
 
     # If canvas is empty, trigger message
-    if np.all(img == 0):
+    if np.all(img == 0) or np.all(img == 255):
         prediction = "Canvas is empty, draw or upload and image."
 
     # Else send image to the model
