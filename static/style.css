@@ -1,55 +1,64 @@
+/* Main container for the canvas and upload section */
 .main-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #ccc;
-  padding: 30px;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically */
+  background-color: #ccc; /* Light gray background */
+  padding: 30px; /* Add padding around the container */
 }
 
+/* Container for centering elements (e.g., prediction text) */
 .container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
 }
 
+/* Styling for the canvas element */
 canvas {
-  background-color: #fff;
+  background-color: #fff; /* White background for the canvas */
 }
 
+/* Container for buttons (e.g., Predict and Clear buttons) */
 .button-container {
-  text-align: center;
+  text-align: center; /* Center-align button text */
 }
 
+/* Container for model selection buttons */
 .button-container-1 {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 10px; /* Add spacing between buttons */
 }
 
+/* Base styling for buttons */
 .button {
-  margin: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  margin: 10px; /* Add margin around buttons */
+  padding: 10px 20px; /* Add padding inside buttons */
+  background-color: #007bff; /* Blue background color */
+  color: #fff; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
 }
 
+/* Hover effect for buttons */
 .button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* Active state for buttons (e.g., selected model) */
 .button.active {
-  background-color: #1b9333; /* Active state */
+  background-color: #1b9333; /* Green background for active state */
 }
 
+/* Container for the upload section (text and upload button) */
 .upload-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 10px;
-  margin-bottom: 0px;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  gap: 5px; /* Add spacing between text and button */
+  margin-top: 10px; /* Add margin at the top */
+  margin-bottom: 0px; /* Remove margin at the bottom */
 }

@@ -7,14 +7,14 @@ import pandas as pd
 from flask import Flask, jsonify, render_template, request
 from PIL import Image
 
-# Load pre-trained models
-KNN = joblib.load("models/knn.pkl")
-NN = joblib.load("models/nn.pkl")
-RANDOM_FOREST = joblib.load("models/random_forest.pkl")
-TREE = joblib.load("models/tree.pkl")
+# Load pre-trained machine learning models
+KNN = joblib.load("models/knn.pkl")  # K-Nearest Neighbors model
+NN = joblib.load("models/nn.pkl")  # Neural Network model
+RANDOM_FOREST = joblib.load("models/random_forest.pkl")  # Random Forest model
+TREE = joblib.load("models/tree.pkl")  # Decision Tree model
 
-# Global variable to handle model selection
-MODEL = KNN
+# Global variable to handle the currently selected model
+MODEL = KNN  # Default model is KNN
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -30,56 +30,78 @@ def index():
     """
     return render_template("index.html")
 
+
 # Route to handle image prediction requests
 @app.route("/predict", methods=["POST"])
 def predecir():
     """
     Handles the prediction logic for the uploaded image.
     Processes the image, loads the model, and returns the predicted class.
+
+    Steps:
+    1. Decode the base64 image data from the request.
+    2. Preprocess the image (resize, convert to grayscale, invert, etc.).
+    3. Prepare the image data for the selected model.
+    4. Use the model to predict the class of the image.
+    5. Map the predicted class index to a human-readable label.
+    6. Return the predicted class as the response.
     """
     # Image preprocessing
     data = request.json  # Get JSON data from the request
-    base64_img = data["image"].split(",")[1]  # Extract base64 image data
-    img_source = data.get('source', 'unknown') # Extract source data
+    base64_img = data["image"].split(",")[
+        1
+    ]  # Extract base64 image data (remove metadata)
+    img_source = data.get(
+        "source", "unknown"
+    )  # Extract source of the image (e.g., 'canvas' or 'upload')
     decoded_img = base64.b64decode(base64_img)  # Decode base64 to binary image data
-    
-    if img_source == 'canvas':
-        original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
-        resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
+
+    # Image processing based on the source
+    if img_source == "canvas":
+        # Open image using PIL and resize to 28x28 pixels
+        original_img = Image.open(BytesIO(decoded_img))
+        resized_img = original_img.resize((28, 28))
         np_img = np.array(resized_img)  # Convert image to a NumPy array
-        img = np_img[:, :, -1].reshape((1, -1))  # Extract the last channel and flatten
-        
+        img = np_img[:, :, -1].reshape(
+            (1, -1)
+        )  # Extract the last channel (alpha) and flatten
     else:
-        # Open the image and convert to grayscale
-        original_img = Image.open(BytesIO(decoded_img)).convert("L")
-        print(f'img format: {original_img.format}')
+        # For uploaded images, convert to grayscale and preprocess
+        original_img = Image.open(BytesIO(decoded_img)).convert(
+            "L"
+        )  # Convert to grayscale
+        print(f"Image format: {original_img.format}")  # Debugging: Print image format
         resized_img = original_img.resize((28, 28))  # Resize to 28x28 pixels
         np_img = np.array(resized_img)  # Convert to NumPy array (2D: height × width)
 
-        # Invert pixel values (0 -> 255, 255 -> 0)
-        np_img = 255 - np_img  # Invert to match dataset format
-        
-        # Flatten the 2D array into a 1D array
-        img = np_img.reshape((1, -1))  # Reshape to (1, 784)
-        
+        # Invert pixel values (0 -> 255, 255 -> 0) to match dataset format
+        np_img = 255 - np_img
 
-    # Selective image processing: RF and TC models were trained with neither normalized 
-    # data nor PCA reduction since best scores were obtained with those data-sets.
+        # Flatten the 2D array into a 1D array (1, 784)
+        img = np_img.reshape((1, -1))
+
+    # Debugging: Print the processed image data
+    print("Processed Image Data:")
+    print(img)
+
+    # Selective image processing based on the selected model
     if MODEL in (RANDOM_FOREST, TREE):
+        # Random Forest and Decision Tree models were trained without normalization or PCA
         img_final = img.reshape(1, -1)  # Flatten the image
-        # Both models were trained using this column name pattern:
-        feature_names = [f"pixel{i + 1}" for i in range(784)]  # For 28x28 image
+        # Create feature names for the DataFrame (pixel1, pixel2, ..., pixel784)
+        feature_names = [f"pixel{i + 1}" for i in range(784)]
         img_final = pd.DataFrame(img_final, columns=feature_names)
-
     else:
+        # Normalize image data for KNN and Neural Network models
         img_final = img / 255.0
-    # # Debugging: Print normalized image data and its shape
+
+    # Debugging: Print normalized image data and its shape
     # print("Normalized Image Data:")
     # print(img_final)
     # print("Image Shape:", img_final.shape)
 
-    # # Debugging: Print selected model
-    # print(MODEL)
+    # Debugging: Print the selected model
+    # print("Selected Model:", MODEL)
 
     # Get prediction from the model
     pred = MODEL.predict(img_final)  # Predict the class of the image
@@ -106,33 +128,46 @@ def predecir():
     # Return the predicted class as the response
     return prediction
 
+
+# Route to select the KNN model
 @app.route("/select-knn", methods=["POST"])
 def select_knn():
+    """
+    Sets the global MODEL variable to the KNN model.
+    """
     global MODEL, KNN
     MODEL = KNN
-    return jsonify({"message": "knn model selected"})
+    return jsonify({"message": "KNN model selected"})
 
 
+# Route to select the Neural Network model
 @app.route("/select-nn", methods=["POST"])
 def select_nn():
+    """
+    Sets the global MODEL variable to the Neural Network model.
+    """
     global MODEL, NN
     MODEL = NN
-    return jsonify({"message": "nn model selected"})
+    return jsonify({"message": "Neural Network model selected"})
 
 
+# Route to select the Random Forest model
 @app.route("/select-random-forest", methods=["POST"])
 def select_random_forest():
+    """
+    Sets the global MODEL variable to the Random Forest model.
+    """
     global MODEL, RANDOM_FOREST
     MODEL = RANDOM_FOREST
-    return jsonify({"message": "random forest model selected"})
+    return jsonify({"message": "Random Forest model selected"})
 
 
+# Route to select the Decision Tree model
 @app.route("/select-tree", methods=["POST"])
 def select_tree():
+    """
+    Sets the global MODEL variable to the Decision Tree model.
+    """
     global MODEL, TREE
     MODEL = TREE
-    return jsonify({"message": "tree model selected"})
-
-# # Run the Flask application
-# if __name__ == "__main__":
-#     app.run(debug=True)  # Start the app in debug mode for development
+    return jsonify({"message": "Decision Tree model selected"})

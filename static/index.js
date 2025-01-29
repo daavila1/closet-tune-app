@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const mainCanvas = document.getElementById('main-canvas');
   const context = mainCanvas.getContext('2d');
 
-  // Set green color in selected model button
-  // Get all buttons within the button container 
+  // Set green color in the selected model button
+  // Get all buttons within the button container
   const buttons = document.querySelectorAll('.button-container-1 .button');
 
   // Add click event listener to each button
@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Base64 Image Data:', imageBase64);
   });
 
-  // Add event listeners for the select model button
-  // Get the buttons
+  // Add event listeners for the select model buttons
   const knnButton = document.getElementById('knn-button');
   const nnButton = document.getElementById('nn-button');
   const randForestButton = document.getElementById('rand-forest-button');
@@ -98,32 +97,48 @@ document.addEventListener('DOMContentLoaded', function () {
   // Set the KNN button as active by default
   knnButton.classList.add('active');
 
+  // Event listener for KNN button
   knnButton.addEventListener('click', function () {
-    axios.post('select-knn')
+    axios.post('/select-knn')
       .then(function (response) {
         console.log(response.data.message);
       })
+      .catch(function (error) {
+        console.error('Error selecting KNN model:', error);
+      });
   });
 
+  // Event listener for Neural Network button
   nnButton.addEventListener('click', function () {
     axios.post('/select-nn')
       .then(function (response) {
         console.log(response.data.message);
       })
+      .catch(function (error) {
+        console.error('Error selecting Neural Network model:', error);
+      });
   });
 
+  // Event listener for Random Forest button
   randForestButton.addEventListener('click', function () {
     axios.post('/select-random-forest')
       .then(function (response) {
         console.log(response.data.message);
       })
+      .catch(function (error) {
+        console.error('Error selecting Random Forest model:', error);
+      });
   });
 
+  // Event listener for Decision Tree button
   treeButton.addEventListener('click', function () {
     axios.post('/select-tree')
       .then(function (response) {
         console.log(response.data.message);
       })
+      .catch(function (error) {
+        console.error('Error selecting Decision Tree model:', error);
+      });
   });
 
   // Get the file input and upload button elements
@@ -148,8 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // When the image is loaded, draw it on the canvas
         img.onload = function () {
-          // Clear the canvas
-          context.fillStyle = "#FFFFFF";  // Fondo blanco
+          // Clear the canvas and set a white background
+          context.fillStyle = '#FFFFFF'; // White background
           context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
           // Draw the image on the canvas, scaled to fit
@@ -169,19 +184,20 @@ document.addEventListener('DOMContentLoaded', function () {
       reader.readAsDataURL(file); // Read the file as a data URL
     }
   });
-});
 
+  // Variable to track if an image was uploaded
+  let wasImageUploaded = false;
 
-let wasImageUploaded = false; // Por defecto, asumimos que el usuario dibujará en el canvas
-// Modificar el evento de carga de imagen
-document.getElementById('upload-input').addEventListener('change', function (event) {
+  // Modify the image upload event to update the flag
+  uploadInput.addEventListener('change', function (event) {
     const file = event.target.files[0];
     if (file) {
-        wasImageUploaded = true; // Indicar que la imagen proviene de una subida
+      wasImageUploaded = true; // Indicate that the image was uploaded
     }
-});
+  });
 
-// Modificar los eventos de dibujo en el canvas
-document.getElementById('main-canvas').addEventListener('mousedown', function () {
-    wasImageUploaded = false; // Si el usuario empieza a dibujar, la imagen es del canvas
+  // Modify the canvas drawing event to update the flag
+  mainCanvas.addEventListener('mousedown', function () {
+    wasImageUploaded = false; // If the user starts drawing, the image is from the canvas
+  });
 });
