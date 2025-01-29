@@ -2,6 +2,7 @@
 A simple Flask web app for testing interactively image classification models trained on the Fashion MNIST dataset. User can upload an image or draw in the canvas to get predictions from four different machine learning models.
 
 # 🛠️ Installation and usage
+Prerequisites: Python 3.8 or higher, pip.
 1. Clone this repository:
 ```bash
 git clone https://github.com/yourusername/closet-tune-app.git
