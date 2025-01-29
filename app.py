@@ -43,6 +43,8 @@ def predecir():
     img_source = data.get('source', 'unknown') # Extract source data
     decoded_img = base64.b64decode(base64_img)  # Decode base64 to binary image data
     
+    # Debugging:
+    print(img_source)
     if img_source == 'canvas':
         original_img = Image.open(BytesIO(decoded_img))  # Open image using PIL
         resized_img = original_img.resize((28, 28))  # Resize image to 28x28 pixels
@@ -73,35 +75,42 @@ def predecir():
 
     else:
         img_final = img / 255.0
+        
     # # Debugging: Print normalized image data and its shape
     # print("Normalized Image Data:")
-    # print(img_final)
+    print(img)
     # print("Image Shape:", img_final.shape)
 
     # # Debugging: Print selected model
     # print(MODEL)
 
+    # If canvas is empty, trigger message
+    if np.all(img == 0):
+        prediction = 'Canvas is empty, draw or upload and image.'
+    
+    # Else send image to the model
+    else: 
     # Get prediction from the model
-    pred = MODEL.predict(img_final)  # Predict the class of the image
+        pred = MODEL.predict(img_final)  # Predict the class of the image
 
-    # Map predicted class index to class name
-    class_names = {
-        0: "t-shirt/top",
-        1: "trouser",
-        2: "pullover",
-        3: "dress",
-        4: "coat",
-        5: "sandal",
-        6: "shirt",
-        7: "sneaker",
-        8: "bag",
-        9: "ankle boot",
-    }
+        # Map predicted class index to class name
+        class_names = {
+            0: "t-shirt/top",
+            1: "trouser",
+            2: "pullover",
+            3: "dress",
+            4: "coat",
+            5: "sandal",
+            6: "shirt",
+            7: "sneaker",
+            8: "bag",
+            9: "ankle boot",
+        }
 
-    prediction = class_names[pred[0]]  # Get the class name from the predicted index
+        prediction = class_names[pred[0]]  # Get the class name from the predicted index
 
-    # Debugging: Print the predicted class
-    print("Predicted Class:", prediction)
+        # Debugging: Print the predicted class
+        print("Predicted Class:", prediction)
 
     # Return the predicted class as the response
     return prediction
